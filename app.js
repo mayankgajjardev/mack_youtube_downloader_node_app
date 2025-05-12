@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const youtubeRoutes = require("./routes/youtubeRoutes");
 const env = require("dotenv");
+const path = require("path");
 
 const app = express();
 env.config();
