@@ -17,21 +17,24 @@ const mergeAndDownload = async (req, res) => {
 		__dirname,
 		`../downloads/${baseName}_merged.mp4`
 	);
-	const cookiesPath = "/etc/secrets/cookies.txt";
 
 	try {
 		console.log("Downloading best audio...");
 		await youtubedl(url, {
 			format: "bestaudio",
 			output: audioPath,
-			cookies: path.join(__dirname, cookiesPath),
+			no_check_certificate: true,
+			no_warnings: true,
+			dumpSingleJson: true,
 		});
 
 		console.log(`Downloading best ${quality}p video...`);
 		await youtubedl(url, {
 			format: `bestvideo[height=${quality}]`,
 			output: videoPath,
-			cookies: path.join(__dirname, cookiesPath),
+			no_check_certificate: true,
+			no_warnings: true,
+			dumpSingleJson: true,
 		});
 
 		console.log("Merging with ffmpeg...");
