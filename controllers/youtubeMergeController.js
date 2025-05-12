@@ -23,12 +23,14 @@ const mergeAndDownload = async (req, res) => {
 		await youtubedl(url, {
 			format: "bestaudio",
 			output: audioPath,
+			cookies: path.join(__dirname, "../secrets/cookies.txt"),
 		});
 
 		console.log(`Downloading best ${quality}p video...`);
 		await youtubedl(url, {
 			format: `bestvideo[height=${quality}]`,
 			output: videoPath,
+			cookies: path.join(__dirname, "../secrets/cookies.txt"),
 		});
 
 		console.log("Merging with ffmpeg...");

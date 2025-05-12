@@ -14,6 +14,7 @@ const getVideoInfo = async (req, res) => {
 			noWarnings: true,
 			noCheckCertificate: true,
 			youtubeSkipDashManifest: true,
+			cookies: path.join(__dirname, "../secrets/cookies.txt"),
 		});
 
 		const videoInfo = {
