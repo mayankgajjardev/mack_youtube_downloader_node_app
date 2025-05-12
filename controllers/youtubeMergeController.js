@@ -23,8 +23,6 @@ const mergeAndDownload = async (req, res) => {
 		await youtubedl(url, {
 			format: "bestaudio",
 			output: audioPath,
-			no_check_certificate: true,
-			no_warnings: true,
 			dumpSingleJson: true,
 		});
 
@@ -32,8 +30,6 @@ const mergeAndDownload = async (req, res) => {
 		await youtubedl(url, {
 			format: `bestvideo[height=${quality}]`,
 			output: videoPath,
-			no_check_certificate: true,
-			no_warnings: true,
 			dumpSingleJson: true,
 		});
 
