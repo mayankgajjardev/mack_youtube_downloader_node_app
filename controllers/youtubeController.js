@@ -1,6 +1,7 @@
 const youtubedl = require("youtube-dl-exec");
 const path = require("path");
 const { createWriteStream, unlink } = require("fs");
+const fs = require("fs");
 const { exec } = require("youtube-dl-exec");
 
 const getVideoInfo = async (req, res) => {
@@ -8,13 +9,19 @@ const getVideoInfo = async (req, res) => {
 	if (!url) return res.status(400).json({ error: "URL is required" });
 
 	try {
+		const sourcePath = "/etc/secrets/cookies.txt"; // read-only
+		const writablePath = path.join(__dirname, "cookies.txt"); // safe to write to
+		if (!fs.existsSync(writablePath)) {
+			fs.copyFileSync(sourcePath, writablePath);
+			console.log("✅ cookies.txt copied to writable path.");
+		}
+
 		const info = await youtubedl(url, {
 			dumpSingleJson: true,
 			simulate: true, // Avoid downloading/processing
 			flatPlaylist: true, // Skip recursive processing
 			callHome: false,
-			cookies: "/etc/secrets/cookies.txt",
-			noWrite: true,
+			cookies: path.join(__dirname, "cookies.txt"),
 		});
 		console.log("info", info.format);
 

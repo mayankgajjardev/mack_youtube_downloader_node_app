@@ -18,21 +18,26 @@ const mergeAndDownload = async (req, res) => {
 		`../downloads/${baseName}_merged.mp4`
 	);
 
+	const sourcePath = "/etc/secrets/cookies.txt"; // read-only
+	const writablePath = path.join(__dirname, "cookies.txt"); // safe to write to
+	if (!fs.existsSync(writablePath)) {
+		fs.copyFileSync(sourcePath, writablePath);
+		console.log("✅ cookies.txt copied to writable path.");
+	}
+
 	try {
 		console.log("Downloading best audio...");
 		await youtubedl(url, {
 			format: "bestaudio",
 			output: audioPath,
-			cookies: "/etc/secrets/cookies.txt",
-			noWrite: true,
+			cookies: path.join(__dirname, "cookies.txt"),
 		});
 
 		console.log(`Downloading best ${quality}p video...`);
 		await youtubedl(url, {
 			format: `bestvideo[height=${quality}]`,
 			output: videoPath,
-			cookies: "/etc/secrets/cookies.txt",
-			noWrite: true,
+			cookies: path.join(__dirname, "cookies.txt"),
 		});
 
 		console.log("Merging with ffmpeg...");
