@@ -13,7 +13,7 @@ const getVideoInfo = async (req, res) => {
 			simulate: true, // Avoid downloading/processing
 			flatPlaylist: true, // Skip recursive processing
 			callHome: false,
-			cookies: path.join(__dirname, "../secrets/cookies.txt"),
+			cookies: "/etc/secrets/cookies.txt",
 		});
 		console.log("info", info.format);
 
