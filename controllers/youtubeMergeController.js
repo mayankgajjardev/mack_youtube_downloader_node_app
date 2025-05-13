@@ -55,9 +55,9 @@ const mergeAndDownload = async (req, res) => {
 
 				res.download(outputPath, () => {
 					// Clean up temp files
-					// fs.unlink(audioPath, () => {});
-					// fs.unlink(videoPath, () => {});
-					// fs.unlink(outputPath, () => {});
+					fs.unlink(audioPath, () => {});
+					fs.unlink(videoPath, () => {});
+					fs.unlink(outputPath, () => {});
 				});
 			})
 			.on("error", (err) => {
