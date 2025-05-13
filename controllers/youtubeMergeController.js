@@ -24,6 +24,7 @@ const mergeAndDownload = async (req, res) => {
 			format: "bestaudio",
 			output: audioPath,
 			cookies: "/etc/secrets/cookies.txt",
+			noWrite: true,
 		});
 
 		console.log(`Downloading best ${quality}p video...`);
@@ -31,6 +32,7 @@ const mergeAndDownload = async (req, res) => {
 			format: `bestvideo[height=${quality}]`,
 			output: videoPath,
 			cookies: "/etc/secrets/cookies.txt",
+			noWrite: true,
 		});
 
 		console.log("Merging with ffmpeg...");

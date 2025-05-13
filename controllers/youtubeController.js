@@ -14,6 +14,7 @@ const getVideoInfo = async (req, res) => {
 			flatPlaylist: true, // Skip recursive processing
 			callHome: false,
 			cookies: "/etc/secrets/cookies.txt",
+			noWrite: true,
 		});
 		console.log("info", info.format);
 
