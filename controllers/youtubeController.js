@@ -1,6 +1,5 @@
 const youtubedl = require("youtube-dl-exec");
 const path = require("path");
-const fs = require("fs");
 const { createWriteStream, unlink } = require("fs");
 const { exec } = require("youtube-dl-exec");
 
@@ -11,11 +10,12 @@ const getVideoInfo = async (req, res) => {
 	try {
 		const info = await youtubedl(url, {
 			dumpSingleJson: true,
-			noWarnings: true,
-			noCheckCertificate: true,
-			youtubeSkipDashManifest: true,
+			simulate: true, // Avoid downloading/processing
+			flatPlaylist: true, // Skip recursive processing
+			callHome: false,
 			cookies: path.join(__dirname, "../secrets/cookies.txt"),
 		});
+		console.log("info", info.format);
 
 		const videoInfo = {
 			title: info.title,
@@ -31,14 +31,25 @@ const getVideoInfo = async (req, res) => {
 			average_rating: info.average_rating,
 			thumbnail_width: info.thumbnail_width,
 			thumbnail_height: info.thumbnail_height,
-			formats: info.formats
-				.filter((f) => f.ext === "mp4" && f.height)
-				.map((f) => ({
-					format_id: f.format_id,
-					resolution: `${f.height}p`,
-					url: f.url,
-					filesize: f.filesize || null,
-				})),
+			formats: info.formats.map((f) => ({
+				format_id: f.format_id,
+				resolution: `${f.height}p`,
+				url: f.url,
+				filesize: f.filesize || null,
+				type: f.type,
+				quality: f.quality_label,
+				abr: f.abr || null,
+				ext: f.ext,
+				format_note: f.format_note,
+				container: f.container,
+				quality_label: f.quality_label,
+				aspect_ratio: f.width ? `${f.width}:${f.height}` : null,
+				fps: f.fps || null,
+				vcodec: f.vcodec || null,
+				acodec: f.acodec || null,
+				isAudio: f.acodec === "none" ? false : true,
+				format: f.format,
+			})),
 		};
 
 		res.json(videoInfo);
@@ -106,10 +117,7 @@ const downloadVideo = async (req, res) => {
 		{
 			format: format_id,
 			output: outputPath,
-			// output: "-", // stream to stdout
-			// o: "-", // some versions prefer this
-			// stdout: "pipe",
-			// stderr: "pipe",
+			cookies: path.join(__dirname, "../secrets/cookies.txt"),
 		},
 		{ stdio: ["ignore", "pipe", "pipe"] }
 	);

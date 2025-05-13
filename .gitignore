@@ -1,6 +1,9 @@
 # Node.js
 node_modules/
 
+# secrets folder
+secrets/
+
 # Logs
 logs
 *.log
