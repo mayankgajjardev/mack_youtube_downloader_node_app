@@ -24,6 +24,11 @@ const getDownloadVideoInfo = asyncHandler(async (req, res) => {
 			message: "URL is required",
 			status: statusCode.COMMON_ERROR,
 		});
+	// Copy cookies to a writable path (Render secret files are read-only)
+	const secretCookiesPath = "/etc/secrets/cookies.txt";
+	const tempCookiesPath = "/tmp/cookies.txt";
+	fs.copyFileSync(secretCookiesPath, tempCookiesPath);
+
 	flags = {
 		dumpSingleJson: true,
 		simulate: true,
@@ -35,7 +40,7 @@ const getDownloadVideoInfo = asyncHandler(async (req, res) => {
 		noWarnings: true,
 		geoBypass: true,
 		geoBypassCountry: "US",
-		cookies: "/etc/secrets/cookies.txt",
+		cookies: tempCookiesPath,
 		noOverwrites: true,
 	};
 	const info = await youtubedl(url, flags);
