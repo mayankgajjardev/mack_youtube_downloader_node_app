@@ -1,43 +1,41 @@
+require("module-alias/register");
 const express = require("express");
 const cors = require("cors");
 const youtubeRoutes = require("./routes/youtubeRoutes");
 const env = require("dotenv");
 const path = require("path");
+const db = require("./db");
+const { errorHandler, logHandler } = require("./middlewares/error");
+var cookieParser = require("cookie-parser");
+const { statusCode } = require("@const");
 
 const app = express();
 env.config();
 app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: "2gb" }));
+app.use(express.urlencoded({ limit: "2gb", extended: true }));
+app.use(cookieParser());
 app.use("/downloads", express.static(path.join(__dirname, "downloads")));
 
-app.use((req, res, next) => {
-	const now = new Date().toISOString();
-	console.log(`[${now}] ${req.method} ${req.originalUrl}`);
-	if (req.body && Object.keys(req.body).length > 0) {
-		console.log("Body:", req.body);
-	}
-	if (req.query && Object.keys(req.query).length > 0) {
-		console.log("Query:", req.query);
-	}
-	next();
-});
+/// Log Handler
+app.use(logHandler);
 
 app.use("/api/youtube", youtubeRoutes);
+app.use("/api/user", require("./routes/userRoutes"));
 
-// catch 404 and forward to error handler
-app.use(function (req, res, next) {
-	var err = new Error("Not Found");
-	err.status = 404;
-	next(err);
-});
+// Error handling
+app.use(errorHandler);
 
-app.use((err, req, res, next) => {
-	console.error("Unhandled Error:", err.stack);
-	res.status(500).json({ error: "Internal Server Error" });
-});
-app.listen(process.env.PORT || 3000, () => {
-	console.log(
-		`Server running on port http://localhost:${process.env.PORT || 3000}`
-	);
-});
+/// Database Sync
+db.sequelize
+	.sync()
+	.then(() => {
+		app.listen(process.env.PORT || 3000, "0.0.0.0", () => {
+			console.log(
+				`✅ Server running on http://localhost:${process.env.PORT || 3000}`
+			);
+		});
+	})
+	.catch((err) => {
+		console.error("Database sync error:", err);
+	});
