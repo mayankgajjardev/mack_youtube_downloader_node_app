@@ -262,6 +262,11 @@ const mergeAndDownload = asyncHandler(async (req, res) => {
 			status: statusCode.COMMON_ERROR,
 		});
 
+	// Copy cookies to a writable path (Render secret files are read-only)
+	const secretCookiesPath = "/etc/secrets/cookies.txt";
+	const tempCookiesPath = "/tmp/cookies.txt";
+	fs.copyFileSync(secretCookiesPath, tempCookiesPath);
+
 	const baseName = `video_${quality}_${Date.now()}`;
 	const audioPath = path.join(__dirname, `../downloads/${baseName}_audio.webm`);
 	const videoPath = path.join(__dirname, `../downloads/${baseName}_video.webm`);
@@ -274,12 +279,16 @@ const mergeAndDownload = asyncHandler(async (req, res) => {
 	await youtubedl(url, {
 		format: "bestaudio/best",
 		output: audioPath,
+		cookies: tempCookiesPath,
+		noOverwrites: true,
 	});
 
 	console.log(`Downloading best ${quality}p video...`);
 	await youtubedl(url, {
 		format: `bestvideo[height=${quality}]`,
 		output: videoPath,
+		cookies: tempCookiesPath,
+		noOverwrites: true,
 	});
 
 	console.log("Merging with ffmpeg...");
