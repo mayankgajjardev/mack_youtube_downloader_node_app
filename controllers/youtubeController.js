@@ -36,6 +36,7 @@ const getDownloadVideoInfo = asyncHandler(async (req, res) => {
 		geoBypass: true,
 		geoBypassCountry: "US",
 		cookies: "/etc/secrets/cookies.txt",
+		noOverwrites: true,
 	};
 	const info = await youtubedl(url, flags);
 	const uniqueFormatsMap = new Map();
