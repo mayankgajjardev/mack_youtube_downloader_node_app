@@ -407,9 +407,9 @@ const getVideosByCategory = asyncHandler(async (req, res) => {
 			description: snippet.description,
 			categoryId: snippet.categoryId,
 			thumbnail:
-				snippet.thumbnails?.default ||
 				snippet.thumbnails?.high ||
 				snippet.thumbnails?.standard ||
+				snippet.thumbnails?.default ||
 				null,
 			channelInfo: {
 				channelId: snippet.channelId,
@@ -478,9 +478,9 @@ const searchVideos = asyncHandler(async (req, res) => {
 			channelTitle: snippet.channelTitle,
 			categoryId: snippet.categoryId,
 			thumbnail:
-				snippet.thumbnails?.default ||
 				snippet.thumbnails?.high ||
 				snippet.thumbnails?.standard ||
+				snippet.thumbnails?.default ||
 				null,
 		};
 	});
