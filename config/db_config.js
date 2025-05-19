@@ -1,7 +1,10 @@
 module.exports = {
-	HOST: "127.0.0.1",
-	USER: "root",
-	PASSWORD: "",
-	DB: "mack_yt_downloader",
+	HOST: "sql12.freesqldatabase.com",
+	USER: "sql12779685",
+	PASSWORD: "KNtTsuE1Dw",
+	DB: "sql12779685",
 	dialect: "mysql",
 };
+
+// 42ZVf2Y*zarfVtA
+//zHR6FC!SWb JPptd
